@@ -3,17 +3,27 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
+    public function index()
+    {
+        
+    }
+
+    public function view()
+    {
+        return view('view');
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function user()
     {
-        dd("test");
+        return view('user');
     }
 
     /**
@@ -79,6 +89,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        DB::table('users')->where('id', '=', $id)->delete(); 
+        return redirect()->back()->with('success', 'your message,here');   
     }
 }
