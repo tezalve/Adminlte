@@ -4,9 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+
+
+
 
 class UserController extends Controller
 {
+
+    public function __construct(){
+        $this->middleware('auth');
+    }
+
     public function index()
     {
         
@@ -14,7 +26,8 @@ class UserController extends Controller
 
     public function view()
     {
-        return view('view');
+        $users = DB::table('users')->select('id','name','email')->get();
+        return view('user/view', compact('users', 'users'));
     }
     /**
      * Display a listing of the resource.
@@ -23,7 +36,7 @@ class UserController extends Controller
      */
     public function user()
     {
-        return view('user');
+        return view('user/user');
     }
 
     /**
@@ -33,7 +46,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('users.create');
     }
 
     /**
@@ -44,7 +57,16 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request->all());
+
+        $password_test = $request->password;
+
+        $post = new User;
+        $post->name = $request->name;
+        $post->email = $request->email;
+        $post->password = Hash::make($password_test);
+        $post->save();
+        return redirect('/')->with('status', 'Data Has Been inserted');
     }
 
     /**
@@ -55,7 +77,8 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $users = User::findOrFail($id);
+        return view('users.show', compact('users','users'));
     }
 
     /**
@@ -66,7 +89,9 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $users = User::find($id);
+
+        return view('users.edit', compact('users','users'));
     }
 
     /**
@@ -78,7 +103,18 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $users = User::findOrFail($id);
+
+        $this->validate($request, [
+            'name' => 'required',
+            'email' => 'required'
+        ]);
+
+        $input = $request->all();
+
+        $users->fill($input)->save();
+
+        return redirect()->route('users.index');
     }
 
     /**

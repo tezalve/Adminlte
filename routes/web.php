@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminLteController;
+use App\Http\Controllers\PostController;
 
 Auth::routes(); 
 /*
@@ -22,16 +23,19 @@ Route::get('/starter', [AdminLteController::class, 'starter']);
 Route::get('/', [AdminLteController::class, 'index']);
 Route::get('/home', [AdminLteController::class, 'index']);
 Route::get('/index2', [AdminLteController::class, 'index2']);
+Route::post('store-form', [UserController::class, 'store']);
 
+
+// Route::get('/user', [UserController::class, 'user']);
+
+Route::get('/view', [UserController::class, 'view']);
+
+// Route::get('user/{id}/cancel', [UserController::class, 'destroy']);
+
+Route::resource('users', UserController::class);
 
 Route::get('/user', [UserController::class, 'user']);
 
-Route::get('/view', function () {
-    $users = DB::table('users')->select('id','name','email')->get();
-    return view('view', compact('users'));
-});
-
-Route::get('user/{id}/cancel', [UserController::class, 'destroy']);
 
 // Route::resource('users',          '\App\Http\Controllers\UserController');
 
