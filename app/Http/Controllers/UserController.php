@@ -61,12 +61,12 @@ class UserController extends Controller
 
         $password_test = $request->password;
 
-        $post = new User;
-        $post->name = $request->name;
-        $post->email = $request->email;
-        $post->password = Hash::make($password_test);
-        $post->save();
-        return redirect('/')->with('status', 'Data Has Been inserted');
+        $user = new User;
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = Hash::make($password_test);
+        $user->save();
+        return redirect('/view')->with('status', 'Data Has Been inserted');
     }
 
     /**
@@ -87,11 +87,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        $users = User::find($id);
-
-        return view('users.edit', compact('users','users'));
+        return view('user.edit', compact('user'));
     }
 
     /**
@@ -101,20 +99,18 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        $users = User::findOrFail($id);
-
-        $this->validate($request, [
+       
+        $request->validate([
             'name' => 'required',
-            'email' => 'required'
+            'description' => 'required',
+            'price' => 'required'
         ]);
+        $user->update($request->all());
 
-        $input = $request->all();
-
-        $users->fill($input)->save();
-
-        return redirect()->route('users.index');
+        return redirect()->route('/view')
+        ->with('success', 'Product updated successfully');
     }
 
     /**

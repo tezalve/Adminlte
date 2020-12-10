@@ -50,8 +50,15 @@
                   <td>{{ $user->id }}</td>
                   <td>{{ $user->name }}</td>
                   <td>{{ $user->email }} </td>
-                  <td><a href="#">Edit</a></td>
-                  <td><a href="{{url('users.destroy')}}">Delete</a></td>
+                  <td><a href="{{ route('users.edit', $user->id) }}">Edit</a></td>
+                  <td>
+                    <form action="{{ route('users.destroy', $user->id) }}" method="POST">  
+                      @csrf
+                      @method('DELETE')
+                        <button type="submit" title="delete">
+                        </button>
+                    </form>
+                  </td>
                 </tr>
                 @endforeach
                 </tfoot>
